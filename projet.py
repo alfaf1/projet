@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template, url_for
 
 app = Flask(__name__)
 
@@ -18,8 +18,13 @@ session = DBSession()
 
 @app.route ('/')
 @app.route ('/home')
-def Home():
-	tournois = session.query(Tournaments).first()
+def Home():	
+	return render_template('home.html')
+
+
+@app.route ('/tournois/<int:tournament_id>/')
+def tournois(tournament_id):
+	tournois = session.query(Tournaments).filter_by(id=tournament_id).one()
 	output = tournois.tournamentName
 	output += '<br>'
 	output += tournois.gameSystem
@@ -32,6 +37,14 @@ def Home():
 	output += '<br>'
 	return output
 
+
+@app.route("/description")
+def about():
+    return render_template('about.html', title='Description')
+
+@app.route("/nav")
+def navigation():
+    return render_template('nav.html', title='Navigation')
 
 if __name__ == '__main__':
 	app.debug = True
