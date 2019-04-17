@@ -25,17 +25,7 @@ def Home():
 @app.route ('/tournois/<int:tournament_id>/')
 def tournois(tournament_id):
 	tournois = session.query(Tournaments).filter_by(id=tournament_id).one()
-	output = tournois.tournamentName
-	output += '<br>'
-	output += tournois.gameSystem
-	output += '<br>'
-	output += tournois.postCode
-	output += '<br>'
-	output += tournois.city
-	output += '<br>'
-	output += tournois.startDate
-	output += '<br>'
-	return output
+	return render_template('tournois.html', tournois=tournois)
 
 
 @app.route("/description")
