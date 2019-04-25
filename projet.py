@@ -23,18 +23,24 @@ def Home():
 
 
 @app.route ('/tournois/<int:tournament_id>/')
-def tournois(tournament_id):
+def Tournois(tournament_id):
 	tournois = session.query(Tournaments).filter_by(id=tournament_id).one()
 	return render_template('tournois.html', tournois=tournois)
 
 
 @app.route("/description")
-def about():
-    return render_template('about.html', title='Description')
+def Description():
+    return render_template('description.html', title='Description')
 
-@app.route("/nav")
-def navigation():
-    return render_template('nav.html', title='Navigation')
+
+@app.route("/about")
+def About():
+    return render_template('about.html', title='About')
+
+
+@app.route("/navigation")
+def Navigation():
+    return render_template('navigation.html', title='Navigation')
 
 if __name__ == '__main__':
 	app.debug = True
