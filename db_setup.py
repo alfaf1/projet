@@ -46,7 +46,7 @@ class Tournaments(Base):
     startDate = Column(String(100), nullable=False)
 
 
-engine = create_engine('sqlite:///tournament.db')
+engine = create_engine('sqlite:///tournament.db?check_same_thread=False')
 
 
 Base.metadata.create_all(engine)
