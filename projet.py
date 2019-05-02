@@ -23,6 +23,8 @@ session = DBSession()
 
 @app.route ('/')
 
+
+
 @app.route ('/home')
 def Home():
 	return render_template('home.html')
@@ -63,6 +65,34 @@ def ListeTournois():
 	#return render_template('listeTournois.html', title='Liste des tournois', output=output)
 	return output
 
+@app.route("/choixSystJeu")
+def ChoixSystJeu():
+	tournaments = session.query(Tournaments.gameSystem).distinct(Tournaments.gameSystem).order_by(Tournaments.gameSystem)
+	#tournaments = session.query(distinct(Tournaments.gameSystem))
+	#output = '<ol>'
+	#for tourn in tournaments:
+	#	output += '<li>'
+	#	output += tourn.gameSystem
+	#	output += '</li>'
+	#output += '</ol>'
+	#return output
+	output = ''
+	output += '<form action="/resultats" method="post">'
+	for tourn in tournaments:
+		output += '<input type="checkbox" name="jeux" value="'
+		output += tourn.gameSystem
+		output += '" id="'
+		output += tourn.gameSystem
+		output += '"> <label for="'
+		output += tourn.gameSystem
+		output += '">'
+		output += tourn.gameSystem
+		output += '</label><br>'
+	output += '<div class="button"><button type="submit">Rechercher</button></div>'
+	output += '</form>'
+	return output
+	#<input type="checkbox" name="favorite_pet" value="Dogs" id="dogs">
+	#<label for="dogs">Dogs</label><br>
 
 
 @app.route("/navigation")
