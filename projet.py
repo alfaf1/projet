@@ -19,9 +19,23 @@ session = DBSession()
 #Fin de l'initialisation de la base de donnees
 
 
+
+
 @app.route ('/')
+def HelloWorld():
+	tournaments = session.query(Tournaments).all()
+	output = '<ul>'
+	for tourn in tournaments:
+		output += '<li>'
+		output += str(tourn.id)  #str pour convertion de int vers string
+		output += ' '
+		output += tourn.tournamentName
+		output += '</li>'
+	return output
+
+
 @app.route ('/home')
-def Home():	
+def Home():
 	return render_template('home.html')
 
 
@@ -39,6 +53,27 @@ def Description():
 @app.route("/about")
 def About():
     return render_template('about.html', title='About')
+
+@app.route("/listeTournois")
+def ListeTournois():
+	tournaments = session.query(Tournaments).all()
+	output = '<table border=3><tr><th>Start date</th><th>Nom</th><th>game System</th><th>city</th></tr>'
+	for tourn in tournaments:
+		output += '<tr><td>'
+		output += tourn.startDate
+		output += '</td><td>'
+		output += tourn.tournamentName
+		output += '</td><td>'
+		output += tourn.gameSystem
+		output += '</td><td>'
+		output += tourn.city
+		output += '</td><td>'
+		output += str(tourn.id)  #str pour convertion de int vers string
+		output += '</td></tr>'
+	output+='table'
+	#return render_template('listeTournois.html', title='Liste des tournois', output=output)
+	return output
+
 
 
 @app.route("/navigation")
