@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, flash, redirect
+from flask import Flask, render_template, request, url_for, flash, redirect
 from forms import RegistrationForm, LoginForm
 
 app = Flask(__name__)
@@ -11,7 +11,8 @@ from sqlalchemy.orm import sessionmaker
 from db_setup import Base, User, Tournaments
 
 
-engine = create_engine('sqlite:///tournament.db')
+#engine = create_engine('sqlite:///tournament.db')
+engine = create_engine('sqlite:///tournament.db?check_same_thread=False')
 Base.metadata.bind = engine
 
 DBSession = sessionmaker(bind=engine)
@@ -78,6 +79,7 @@ def ChoixSystJeu():
 	#return output
 	output = ''
 	output += '<form action="/resultats" method="post">'
+	output+= '<input id="prodId" name="prodId" type="hidden" value="xm234jq">' #pour debug
 	for tourn in tournaments:
 		output += '<input type="checkbox" name="jeux" value="'
 		output += tourn.gameSystem
@@ -94,6 +96,50 @@ def ChoixSystJeu():
 	#<input type="checkbox" name="favorite_pet" value="Dogs" id="dogs">
 	#<label for="dogs">Dogs</label><br>
 
+@app.route('/resultats', methods=['POST'])
+def ResultatsRecherche():
+	if request.method == 'POST':
+		if request.form['jeux']:
+			output = ''
+			#output += request.form.getlist('jeux')
+			#output = ''
+			#output += '<ol>'
+			#for jeuChoisi in request.form.getlist('jeux'):
+			#	output += '<li>'
+			#	output += jeuChoisi
+			#	output += '<li>'
+			#output += '</ol>'
+			# BUG? une ligne sur deux est vide => à améliorer!
+			#return output
+			#strFilter = ["Infinity", "SAGA", "Dust 1947"]
+			strFilter = request.form.getlist('jeux')
+			#User.name.in_(['ed', 'wendy', 'jack']))
+			#tournaments = session.query(Tournaments).filter(Tournaments.gameSystem.in_(['Infinity','SAGA','Dust 1947'])).all()
+			tournaments = session.query(Tournaments).filter(Tournaments.gameSystem.in_(strFilter)).all()
+			output = '<table border=3><tr><th>Start date</th><th>Nom</th><th>game System</th><th>city</th></tr>'
+			for tourn in tournaments:
+				output += '<tr><td>'
+				output += tourn.startDate
+				output += '</td><td>'
+				output += tourn.tournamentName
+				output += '</td><td>'
+				output += tourn.gameSystem
+				output += '</td><td>'
+				output += tourn.city
+				output += '</td><td>'
+				output += str(tourn.id)  #str pour convertion de int vers string
+				output += '</td></tr>'
+			output+='table'
+			#return render_template('listeTournois.html', title='Liste des tournois', output=output)
+			return output
+			
+			
+			
+			
+	else: 
+		output = 'bugg'
+		return output
+	
 
 @app.route("/navigation")
 def Navigation():
