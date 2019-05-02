@@ -22,17 +22,6 @@ session = DBSession()
 
 
 @app.route ('/')
-def HelloWorld():
-	tournaments = session.query(Tournaments).all()
-	output = '<ul>'
-	for tourn in tournaments:
-		output += '<li>'
-		output += str(tourn.id)  #str pour convertion de int vers string
-		output += ' '
-		output += tourn.tournamentName
-		output += '</li>'
-	return output
-
 
 @app.route ('/home')
 def Home():
