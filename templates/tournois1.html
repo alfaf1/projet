@@ -22,7 +22,7 @@
 
 <script>
 
-var query_addr = "Paris";
+var query_addr = "Rochehaut";
 // Get the provider, in this case the OpenStreetMap (OSM) provider.
 var provider = new window.GeoSearch.OpenStreetMapProvider()
 // Query for the address
@@ -38,7 +38,7 @@ query_promise.then( value => {
 	var label = value[i].label;
 	var map = L.map( 'map', {
 		center: [y_coor,x_coor], // CAREFULL!!! The first position corresponds to the lat (y) and the second to the lon (x)
-		zoom: 5
+		zoom: 12
 	});
 	// Add tiles (streets, etc)
 	L.tileLayer( 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -52,12 +52,18 @@ query_promise.then( value => {
      // Add a popup to said marker with the address found by geosearch (not the one from the user)
      //marker.bindPopup("<b>Found location</b><br>"+label).openPopup();
 	 
-	 {%for i in range(0, len)%} 
+	 {%for i in range(0, 3)%} 
 		var marker = L.marker([{{tournois[i].lat}},{{tournois[i].longg}}]).addTo(map) // CAREFULL!!! The first position corresponds to the lat (y) and the second to the lon (x)
 	{%endfor%} 
      // Add a popup to said marker with the address found by geosearch (not the one from the user)
 	//marker.bindPopup("<b>Found location</b><br>"+label).openPopup();
 	//L.marker([50.85,4.349]).addTo(map)
+	 
+	 
+	 
+	 
+	 
+	 
    };
 }, reason => {
   console.log(reason); // Error!
@@ -65,16 +71,6 @@ query_promise.then( value => {
 
 </script>
 
-	<table border=3><tr><th>Start date</th><th>Nom</th><th>game System</th><th>city</th><th>id</th><th>latitude</th><th>longitude</th></tr>'
-		{%for i in range(0, len)%} 
-			<tr>
-					<td> {{tournois[i].startDate}} 		</td>
-					<td> <a href="/tournois/{{tournois[i].id}}"><img src="/static/images/info50px.jpg" alt="infos"/></a>{{tournois[i].tournamentName}} </td>
-					<td> {{tournois[i].gameSystem}} 	</td>
-					<td> {{tournois[i].city}} 			</td>
-			</tr>
-		{%endfor%} 
-	</table>
 
 </body>
 </html>

@@ -15,37 +15,35 @@
     </style>
 	</head>
 <!-- Head, imports of Leaflet CSS and JS, Geosearch JS, etc -->
-<!-- Version 11 mai 19  11H14 -->
+
 <body>
 <div id='map'></div>
 
 
 <script>
+// Initialize map to specified coordinates
+  var map = L.map( 'map', {
+    center: [ 51.5, -0.1], // CAREFULL!!! The first position corresponds to the lat (y) and the second to the lon (x)
+    zoom: 12
+});
+
+  // Add tiles (streets, etc)
+  L.tileLayer( 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    subdomains: ['a','b','c']
+}).addTo( map );
 
 var query_addr = "{{ tournois.city }}";
 // Get the provider, in this case the OpenStreetMap (OSM) provider.
-var provider = new window.GeoSearch.OpenStreetMapProvider();
+var provider = new window.GeoSearch.OpenStreetMapProvider()
 // Query for the address
 var query_promise = provider.search({ query: query_addr});
 // Wait until we have an answer on the Promise
-// Initialize map to specified coordinates
-
 query_promise.then( value => {
    for(i=0;i < 1; i++){
      // Success!
-	var x_coor = value[i].x;
-    var y_coor = value[i].y;
-	var label = value[i].label;
-	var map = L.map( 'map', {
-		center: [y_coor,x_coor], // CAREFULL!!! The first position corresponds to the lat (y) and the second to the lon (x)
-		zoom: 12
-	});
-	// Add tiles (streets, etc)
-	L.tileLayer( 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-		attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-		subdomains: ['a','b','c']
-	}).addTo( map );
-	 	 
+     var x_coor = value[i].x;
+     var y_coor = value[i].y;
      var label = value[i].label;
      // Create a marker for the found coordinates
      var marker = L.marker([y_coor,x_coor]).addTo(map) // CAREFULL!!! The first position corresponds to the lat (y) and the second to the lon (x)

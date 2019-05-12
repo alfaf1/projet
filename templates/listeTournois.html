@@ -1,4 +1,6 @@
 
+
+
 <!DOCTYPE html>
 <html>
   <head>
@@ -53,7 +55,7 @@ query_promise.then( value => {
      //marker.bindPopup("<b>Found location</b><br>"+label).openPopup();
 	 
 	 {%for i in range(0, len)%} 
-		var marker = L.marker([{{tournois[i].lat}},{{tournois[i].longg}}]).addTo(map) // CAREFULL!!! The first position corresponds to the lat (y) and the second to the lon (x)
+		var marker = L.marker([{{tournois[i].lat}},{{tournois[i].longg}}]).addTo(map); // CAREFULL!!! The first position corresponds to the lat (y) and the second to the lon (x)
 	{%endfor%} 
      // Add a popup to said marker with the address found by geosearch (not the one from the user)
 	//marker.bindPopup("<b>Found location</b><br>"+label).openPopup();
@@ -65,13 +67,15 @@ query_promise.then( value => {
 
 </script>
 
-	<table border=3><tr><th>Start date</th><th>Nom</th><th>game System</th><th>city</th><th>id</th><th>latitude</th><th>longitude</th></tr>'
+	<table border=3><tr><th>Start date</th><th>Nom</th><th>game System</th><th>city</th><th> lat </th><th> long</th></tr>'
 		{%for i in range(0, len)%} 
 			<tr>
 					<td> {{tournois[i].startDate}} 		</td>
 					<td> <a href="/tournois/{{tournois[i].id}}"><img src="/static/images/info50px.jpg" alt="infos"/></a>{{tournois[i].tournamentName}} </td>
 					<td> {{tournois[i].gameSystem}} 	</td>
 					<td> {{tournois[i].city}} 			</td>
+					<td> {{tournois[i].lat}} 			</td>
+					<td> {{tournois[i].longg}} 			</td> 
 			</tr>
 		{%endfor%} 
 	</table>

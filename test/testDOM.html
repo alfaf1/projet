@@ -1,0 +1,71 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Leaflet.GeoSearch / Google Provider</title>
+	<script src="https://unpkg.com/leaflet-geosearch@2.2.0/dist/bundle.min.js"></script>
+	</head>
+<!-- Head, imports of Leaflet CSS and JS, Geosearch JS, etc -->
+
+<body>
+
+<table>
+<tr> <td class="city"> Wavre</td> <td class="lat"> lat1</td><td class="longg"> long1</td></tr>
+<tr> <td class="city"> Bruxelles</td> <td class="lat"> lat2</td><td class="longg"> long2</td></tr>
+</table>
+
+<script>
+	var provider = new window.GeoSearch.OpenStreetMapProvider()
+	var lat = document.getElementsByClassName('lat');
+	var longg = document.getElementsByClassName('longg');
+	var city = document.getElementsByClassName('city');
+	alert('0');
+	for (let i = 0; i < lat.length; i++) {
+		alert('1');
+		var query_promise = provider.search({ query: city[i].innerHTML});
+		alert('2');
+		query_promise.then( value => {
+		for(i=0;i < 1; i++){
+		// Success!
+		var x_coor = value[i].x;
+		var y_coor = value[i].y;
+		var label = value[i].label;
+		alert('coordonees:'+x_coor+'  '+y_coor);
+	};
+	}, reason => {
+	console.log(reason); // Error!
+	} );
+		//for(i=0;i < 1; i++){
+		//	alert('4');
+		//	alert('coordonees:'+value[i].x+'  '+value[i].y);
+		//};
+		//};
+  //alert('lat='+lat[i].innerHTML+',long='+longg[i].innerHTML);
+	}
+
+//var query_addr = "Namur";
+// Get the provider, in this case the OpenStreetMap (OSM) provider.
+//var provider = new window.GeoSearch.OpenStreetMapProvider()
+// Query for the address
+//var query_promise = provider.search({ query: query_addr});
+// Wait until we have an answer on the Promise
+//query_promise.then( value => {
+//   for(i=0;i < 1; i++){
+     // Success!
+//     var x_coor = value[i].x;
+//     var y_coor = value[i].y;
+//     var label = value[i].label;
+     // Create a marker for the found coordinates
+///     var marker = L.marker([y_coor,x_coor]).addTo(map) // CAREFULL!!! The first position corresponds to the lat (y) and the second to the lon (x)
+     // Add a popup to said marker with the address found by geosearch (not the one from the user)
+//     marker.bindPopup("<b>Found location</b><br>"+label).openPopup();
+///   };
+//}, reason => {
+//  console.log(reason); // Error!
+//} );
+
+</script>
+</body>
+</html>
+
+

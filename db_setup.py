@@ -44,6 +44,8 @@ class Tournaments(Base):
     postCode = Column(String(5), nullable=False)
     city = Column(String(100), nullable=False)
     startDate = Column(String(100), nullable=False)
+    lat = Column(Integer, nullable=True)
+    longg = Column(Integer, nullable=True)
 
 
 engine = create_engine('sqlite:///tournament.db?check_same_thread=False')

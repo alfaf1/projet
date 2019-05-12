@@ -4,7 +4,7 @@
 
   <h1>Home page</h1>
 
-  <form method="post" action="traitement.php">
+  <form method="post" action="/choixSystJeu">
    <p>
        <label for="pays">Choix du pays ?</label><br />
        <select name="pays" id="pays">
@@ -24,45 +24,33 @@
            <option value="suisse">Suisse</option>
        </select>
    </p>
-</form>
 
-
-<form method="post" action="traitement.php">
    <p>
    		<label for="pays">Choix de la ville </label><br />
    		<input type="text" name="ville" />
    	</p>
-</form>
 
-<form method="post" action="traitement.php">
    <p>
    		<label for="pays">Choix du code postal</label><br />
    		<input type="text" name="codePost" />
    	</p>
-</form>
-
-<form method="post" action="traitement.php">
    <p>
-   		<label for="pays">Choix de la date</label><br />
-   		<input type="text" name="date" />
+   		<label for="pays">Choix de la date (format YYYY-MM-DD)</label><br />
+   		<input type="text" name="dateD" />
    	</p>
-</form>
-
-<form method="post" action="traitement.php">
    <p>
    		<label for="pays">Choix de la durée</label><br />
    		<input type="text" name="duree" />
    	</p>
-</form>
-
-<form method="post" action="traitement.php">
    <p>
    		<label for="pays">Choix de la distance</label><br />
    		<input type="text" name="distance" />
    	</p>
-</form>
+
 
 <button>Submit</button>
+
+</form>
 
 {% endblock content %}
 
