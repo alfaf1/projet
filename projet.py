@@ -119,6 +119,7 @@ def ChoixSystJeu():
 			output += tourn.gameSystem
 			output += '</label><br>'
 		output += '<div class="button"><button type="submit">Rechercher</button></div>'
+		output += 'Ne selectionnez aucune puce si vous voulez choisir tous les jeux'
 		output += '</form>'
 	return output
 
@@ -143,69 +144,83 @@ def ResultatsRecherche():
 @app.route('/resultatsRecherche', methods=['POST'])
 def ResultatsRecherche2():
 	if request.method == 'POST':
-		if request.form['jeux']:
-
+		tousLesTournois = False
+		if request.form.get('jeux'): #utilisation de get car jeux pourrait être vide!
 			strFilter = request.form.getlist('jeux')
-
 			tournois = session.query(Tournaments).filter(Tournaments.gameSystem.in_(strFilter)).all()
-
-
-			output = ''
-			output += '<!DOCTYPE html>'
-			output += '<html>'
-			output += '  <head>'
-			output += '<title>tournaments Page</title>'
-			output += '<link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css" integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA==" crossorigin=""/>'
-			output += '<script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js" integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg==" crossorigin=""></script>'
-			output += '<script src="https://unpkg.com/leaflet-geosearch@2.2.0/dist/bundle.min.js"></script>'
-			output += '<style type="text/css">'
-			output += '#map 	{'
-			output += '	width: 600px;'
-			output += ' height: 400px;'
-			output += '}'
-			output += '</style>'
-			output += '</head>'
-			output += '<body>'
-			output += "<div id='map'></div>"
-			output += '<script>'
-			output += 'var query_addr = "Paris";'
-			output += 'var provider = new window.GeoSearch.OpenStreetMapProvider(); '
-			output += 'var query_promise = provider.search({ query: query_addr}); '
-			output += 'query_promise.then( value => { '
-			output += '   for(i=0;i < 1; i++){ '
-			output += '	var x_coor = value[i].x; '
-			output += '   var y_coor = value[i].y; '
-			output += '	var label = value[i].label; '
-			output += "	var map = L.map( 'map', { "
-			output += '		center: [y_coor,x_coor],'
-			output += '		zoom: 5 '
-			output += '	}); '
-			output += "	L.tileLayer( 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { "
-			output += '		attribution: \'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>\', '
-			output += "		subdomains: ['a','b','c'] "
-			output += '	}).addTo( map ); '
-			listeVille = []
-
-			for tourn in tournois:
-				#rlat = 100000 *(tourn.lat )/(100000+ random.randint(1,1000))
-				#rlong= 100000 *(tourn.longg )/(100000+ + random.randint(1,1000))
-				rlat = tourn.lat
-				rlong = tourn.longg
-				#output += 'L.marker(['+str(rlat)+','+str(rlong)+']).addTo(map); '
-				output += 'L.marker(['+str(rlat)+','+str(rlong)+']).addTo(map).bindPopup(\'<a href="/tournois/'+str(tourn.id)+'"><img src="/static/images/info50px.jpg" alt="infos"/></a>infos\'  );'
-			if request.form['distance']:
-					distanceMetre = int(request.form['distance'])*1000
-					if request.form['ville']:
-						geolocator = Nominatim(user_agent="TabTopProject")
-						location = geolocator.geocode(request.form['ville'])
-						latlong = (location.latitude, location.longitude)
-						lat = location.latitude
-						long = location.longitude
-					else: 
-						lat = 48.864716
-						long = 2.349014
-						paris = (lat,long)
-						latlong = paris												
+		else:
+			tournois = session.query(Tournaments).all()
+		output = ''
+		output += '<!DOCTYPE html>'
+		output += '<html>'
+		output += '  <head>'
+		output += '<title>tournaments Page</title>'
+		output += '<link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css" integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA==" crossorigin=""/>'
+		output += '<script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js" integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg==" crossorigin=""></script>'
+		output += '<script src="https://unpkg.com/leaflet-geosearch@2.2.0/dist/bundle.min.js"></script>'
+		output += '<style type="text/css">'
+		output += '#map 	{'
+		output += '	width: 600px;'
+		output += ' height: 400px;'
+		output += '}'
+		output += '</style>'
+		output += '</head>'
+		output += '<body>'
+		output += "<div id='map'></div>"
+		output += '<script>'
+		output += 'var query_addr = "Paris";'
+		output += 'var provider = new window.GeoSearch.OpenStreetMapProvider(); '
+		output += 'var query_promise = provider.search({ query: query_addr}); '
+		output += 'query_promise.then( value => { '
+		output += '   for(i=0;i < 1; i++){ '
+		output += '	var x_coor = value[i].x; '
+		output += '   var y_coor = value[i].y; '
+		output += '	var label = value[i].label; '
+		output += "	var map = L.map( 'map', { "
+		output += '		center: [y_coor,x_coor],'
+		output += '		zoom: 5 '
+		output += '	}); '
+		output += "	L.tileLayer( 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { "
+		output += '		attribution: \'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>\', '
+		output += "		subdomains: ['a','b','c'] "
+		output += '	}).addTo( map ); '
+		listeVille = []
+		
+		niVilleNiDistance = False
+		for tourn in tournois:
+			#rlat = 100000 *(tourn.lat )/(100000+ random.randint(1,1000))
+			#rlong= 100000 *(tourn.longg )/(100000+ + random.randint(1,1000))
+			rlat = tourn.lat
+			rlong = tourn.longg
+			#output += 'L.marker(['+str(rlat)+','+str(rlong)+']).addTo(map); '
+			output += 'L.marker(['+str(rlat)+','+str(rlong)+']).addTo(map).bindPopup(\'<a href="/tournois/'+str(tourn.id)+'"><img src="/static/images/info50px.jpg" alt="infos"/></a>infos\'  );'
+		if request.form['ville']:
+			geolocator = Nominatim(user_agent="TabTopProject")
+			location = geolocator.geocode(request.form['ville'])
+			if location is None: #l'equivalent java de is null
+				lat =  48.864716
+				long = 2.349014
+				paris = (lat,long)
+				latlong = paris #donc si le geocodeur n'a pas trouvé la ville (à améliorer)
+			else:
+				latlong = (location.latitude, location.longitude)
+				lat = location.latitude
+				long = location.longitude
+		if request.form['distance']:
+			distanceMetre = int(request.form['distance'])*1000
+			if not request.form['ville']:
+				lat = 48.864716
+				long = 2.349014
+				paris = (lat,long)
+				latlong = paris #valeur par defaut si on a une ville mais pas de distance
+		else: 
+			if request.form['ville']:
+				distanceMetre = 50000
+				#valeur par defaut si on a une ville mais pas de distance
+			else:
+				niVilleNiDistance = True
+				
+		if not niVilleNiDistance:		
 			output += 'var centerIcon = L.icon({'
 			output += "iconUrl: '/static/images/icon.png',"
 			output += "shadowUrl: '/static/images/icon.png',"
@@ -222,51 +237,79 @@ def ResultatsRecherche2():
 			output += 'fillOpacity: 0.1,'
 			output += 'radius: '+str(distanceMetre) + ' '
 			output += '}).addTo(map);'
-			output += '   }; '
-			output += '}, reason => { '
-			output += '  console.log(reason); '
-			output += '} ); '
-			output +='</script> '
-			output += '<table border=3><tr><th>Start date</th><th>Nom</th><th>game System</th><th>city</th><th>id</th><th>latitude</th><th>longitude</th><th>distance</th></tr>'
-			for tourn in tournois:
-				lieu = (tourn.lat, tourn.longg)
-				if tourn.lat>=-90 and tourn.lat<=90:
-					
-					booDist = request.form['distance']
-					if booDist:
-						dist = distance.distance(latlong, lieu).km
-					else:
-						dist = 0
-					booDate = request.form['dateD'] 
-					if ((booDist and dist < int(request.form['distance'])) or not booDist) and ((booDate and request.form['dateD']==tourn.startDate) or not booDate):
-						output += '<tr><td>'
-						output += tourn.startDate
-						output += '</td><td>'
-						output += '<a href="/tournois/'+str(tourn.id)+'/"><img src="/static/images/info50px.jpg" alt="infos"/></a>' #une image doit tjs se trouver dans le dossier static
-						output += tourn.tournamentName
-						output += '</td><td>'
-						output += tourn.gameSystem
-						output += '</td><td>'
-						output += tourn.city
-						output += '</td><td>'
-						output += str(tourn.id)  #str pour conversion de int vers string
-						output += '</td><td>'
-						output += str(tourn.lat)
-						output += '</td><td>'
-						output += str(tourn.longg) 
-						output += '</td><td>'
-						output += str(round(dist,2))+'km'
-						output += '</td></tr>'
-			output+='</table>'
-			output+='</body>'
-			output+='</html>'
-			return output
+		output += '   }; '
+		output += '}, reason => { '
+		output += '  console.log(reason); '
+		output += '} ); '
+		output +='</script> '
+		
+		
+		# AFFICHAGE DU TEXTE DE LA RECHERCHE
+		output += '<p><font size="5"> Voici le resultat de votre recherche: '
+		if request.form['dateD']:
+			output += 'date: <b>'+ request.form['dateD'] + '</b> '
+		if request.form['ville']:
+			output += 'ville: <b>'+ request.form['ville'] + '</b> '
+		if request.form['distance']:
+			output += 'distance: <b>'+ request.form['distance'] + 'km </b> </font></p>'
+		if request.form.get('jeux'):
+			output += '<p style="color:rgb(250,128,114);">liste des jeux:'
+			for jeu in strFilter:
+				output += ' <b>'+jeu+'</b> '
+			output += '</p>'
+		else: 
+			output += '<p> vous avez choisi d affichez tous les jeux </p>' 
+		
+		# AFFICHAGE DU TABLEAU
+		output += '<table border=3><tr><th>Start date</th><th>Nom</th><th>game System</th><th>city</th><th>id</th><th>latitude</th><th>longitude</th><th>distance</th></tr>'
+		compteur = 0
+		for tourn in tournois:
+			lieu = (tourn.lat, tourn.longg)
+			if tourn.lat>=-90 and tourn.lat<=90: #
+				booDist = request.form['ville'] # si il y'a une ville => il y'a une distanceMetre
+				if booDist:
+					dist = distance.distance(latlong, lieu).km
+				else:
+					dist = 0
+				booDate = request.form['dateD'] 
+				if ((booDist and dist < int(distanceMetre/1000)) or not booDist) and ((booDate and request.form['dateD']==tourn.startDate) or not booDate):
+					compteur += 1
+					output += '<tr><td>'
+					output += tourn.startDate
+					output += '</td><td>'
+					output += '<a href="/tournois/'+str(tourn.id)+'/"><img src="/static/images/info50px.jpg" alt="infos"/></a>' #une image doit tjs se trouver dans le dossier static
+					output += tourn.tournamentName
+					output += '</td><td>'
+					output += tourn.gameSystem
+					output += '</td><td>'
+					output += tourn.city
+					output += '</td><td>'
+					output += str(tourn.id)  #str pour conversion de int vers string
+					output += '</td><td>'
+					output += str(round(tourn.lat,3))
+					output += '</td><td>'
+					output += str(round(tourn.longg,3)) 
+					output += '</td><td>'
+					output += str(round(dist,2))+'km'
+					output += '</td></tr>'
+		output+='</table>'
+		if compteur==0:
+			output+= '<p> nous avons trouvé aucun résultat, peut-être pourriez-vous élargir votre recherche</p>'
+		else:
+			if compteur==1:
+				output+='<p> nous avons trouvé un seul tournoi correspondant à votre recherche</p>' 
+			else:
+				output+='<p> nous avons trouvé '+str(compteur)+' tournois correspondant à votre recherche</p>' 
+		#on devrait utiliser le dom pour mettre ce <p> au dessus du tableau
+		output+='</body>'
+		output+='</html>'
+		return output
 	else: 
 		output = 'devrait être impossible'
 		return output
 
 
-
+#une ancienne version pas utilisée
 @app.route('/resultatsRechercheold', methods=['POST'])
 def ResultatsRechercheOld():
 	if request.method == 'POST':
